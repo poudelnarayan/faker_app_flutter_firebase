@@ -82,6 +82,12 @@ class JobsListView extends ConsumerWidget {
             },
             title: Text(job.title),
             subtitle: Text(job.company),
+            trailing: job.createdAt != null
+                ? Text(
+                    job.createdAt!.toIso8601String(),
+                    style: Theme.of(context).textTheme.bodySmall,
+                  )
+                : null,
           ),
         );
       },

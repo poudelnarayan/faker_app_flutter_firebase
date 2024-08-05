@@ -12,6 +12,7 @@ class FirestoreRepository {
         {
           'title': title,
           'company': company,
+          'createdAt': FieldValue.serverTimestamp(),
         },
       );
 
@@ -32,9 +33,12 @@ class FirestoreRepository {
       _firestore.doc('users/$uid/jobs/$jobId').delete();
 
   Query<Job> jobsQuery(String uid) {
-    return _firestore.collection('users/$uid/jobs').withConverter(
-        fromFirestore: (snapshot, _) => Job.fromMap(snapshot.data()!),
-        toFirestore: (job, _) => job.toMap());
+    return _firestore
+        .collection('users/$uid/jobs')
+        .withConverter(
+            fromFirestore: (snapshot, _) => Job.fromMap(snapshot.data()!),
+            toFirestore: (job, _) => job.toMap())
+        .orderBy('createdAt', descending: true);
   }
 }
 
