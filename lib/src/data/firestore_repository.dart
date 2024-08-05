@@ -8,9 +8,8 @@ class FirestoreRepository {
   final FirebaseFirestore _firestore;
 
   Future<void> addJob(String uid, String title, String company) =>
-      _firestore.collection('jobs').add(
+      _firestore.collection('users/$uid/jobs').add(
         {
-          'uid': uid,
           'title': title,
           'company': company,
         },
@@ -22,24 +21,20 @@ class FirestoreRepository {
     String title,
     String company,
   ) =>
-      _firestore.doc('jobs/$jobId').update(
+      _firestore.doc('users/$uid/jobs/$jobId').update(
         {
-          'uid': uid,
           'title': title,
           'company': company,
         },
       );
 
   Future<void> deleteJob(String uid, String jobId) =>
-      _firestore.doc('jobs/$jobId').delete();
+      _firestore.doc('users/$uid/jobs/$jobId').delete();
 
   Query<Job> jobsQuery(String uid) {
-    return _firestore
-        .collection('jobs')
-        .where("uid", isEqualTo: uid)
-        .withConverter(
-            fromFirestore: (snapshot, _) => Job.fromMap(snapshot.data()!),
-            toFirestore: (job, _) => job.toMap());
+    return _firestore.collection('users/$uid/jobs').withConverter(
+        fromFirestore: (snapshot, _) => Job.fromMap(snapshot.data()!),
+        toFirestore: (job, _) => job.toMap());
   }
 }
 
